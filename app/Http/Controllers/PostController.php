@@ -12,18 +12,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $name="aavash";
-        $age="32";
-        $post=[
-            'post1',
-            'post2 ',
-            'post3'
-        ];
+        $posts = Post::all();
+
 
         return view('posts.index', [
-            'name'=>$name,
-            'AGE'=>$age,
-            'posts'=>$post
+           'posts' => $posts
 
         ]);
     }
@@ -42,15 +35,24 @@ public function create(Request $request){
      */
     public function store(Request $request)
     {
-        //
+Post::create([
+    'title'=>$request->title,
+    'content'=>$request->content
+]);
+return to_route('posts.index');
+
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show()
+    public function show($id)
     {
+        $post=Post::find($id);
+
         return view('posts.show', [
+            'post'=>$post
 
         ]);
     }
