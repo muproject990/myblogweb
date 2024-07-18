@@ -3,13 +3,16 @@
         Post Index Page
     </x-header>
     <div class="flex justify-end">
-        <a href="/posts/create" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create</a>
+        <a href="{{route('posts.create')}}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create</a>
     </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 
     @foreach($posts as $post)
 
 
-        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div class="max-w-sm m-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white ">
             <a href="#">
                 <img class="rounded-t-lg" src="" alt="img" />
             </a>
@@ -28,4 +31,7 @@
         </div>
 
     @endforeach
+
+    </div>
+
 </x-layout>
