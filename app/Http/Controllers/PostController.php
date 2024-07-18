@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -27,8 +28,14 @@ class PostController extends Controller
      *  Show form to create a new resource.
      */
     public function create(Request $request)
+
     {
-        return view('posts.create');
+
+        if (!auth()->check())  {
+            return  to_route('login');
+        }
+
+            return view('posts.create');
     }
 
     /**
@@ -36,6 +43,8 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->check())  abort(403);
+
         try {
             $validated = $request->validate([
                 'title' => 'required|min:5|max:255',
@@ -58,10 +67,12 @@ class PostController extends Controller
      */
     public function show($id)
     {
+        if (!auth()->check())  abort(403);
+
         try {
             $post = Post::findOrFail($id);
             return view('posts.show', ['post' => $post]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return view('error', ['message' => 'Post not found.']);
         } catch (\Exception $e) {
             Log::error('Error showing post: ' . $e->getMessage());
