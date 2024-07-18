@@ -12,8 +12,30 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $name="aavash";
+        $age="32";
+        $post=[
+            'post1',
+            'post2 ',
+            'post3'
+        ];
+
+        return view('posts.index', [
+            'name'=>$name,
+            'AGE'=>$age,
+            'posts'=>$post
+
+        ]);
     }
+
+    /**
+     *  Show form to create a  new resource.
+     */
+
+public function create(Request $request){
+    return view('posts.create');
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -26,9 +48,19 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show()
     {
-        //
+        return view('posts.show', [
+
+        ]);
+    }
+    /**
+     * Edit the specified resource in storage.
+     */
+    public function edit(){
+        return view('posts.edit', [
+        ]);
+
     }
 
     /**
