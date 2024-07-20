@@ -6,7 +6,7 @@ use App\Http\Controllers\RegisterUserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-Route::view('/','welcome');
+Route::view('/','auth.register');
 Route::resource('/posts',PostController::class)->middleware('auth');
 
 //Register

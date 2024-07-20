@@ -1,3 +1,3 @@
 <x-layout>
-    <h1 class=" text-white py-3 text-4xl">Welcome to Blog Website</h1>
+    <h1 class=" text-white py-3 text-4xl">Welcome {{$user->name}}</h1>
 </x-layout>
