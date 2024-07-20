@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
@@ -48,9 +51,17 @@ class PostController extends Controller
 
             $validated = $request->validate([
                 'title' => 'required|min:5|max:255',
-                'content' => 'required'
+                'content' => 'required',
+                'image'=>['required','image']
             ]);
 
+            // Handle file upload
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('images', 'public');
+                $validated['image'] = $imagePath;
+            } else {
+                throw new \Exception('Image file is required.');
+            }
             $post = auth()->user()->posts()->create($validated);
 
             if ($post) {
@@ -68,6 +79,8 @@ class PostController extends Controller
             return redirect()->back()->with('error', 'Unable to create post. Please try again later.')->withInput();
         }
     }
+
+
 
     /**
      * Display the specified resource.
@@ -108,8 +121,19 @@ class PostController extends Controller
 
             $validated = $request->validate([
                 'title' => 'required|min:5|max:255',
-                'content' => 'required'
+                'content' => 'required',
+                'image'=>['sometimes','image']
+
             ]);
+
+           if ($request->hasFile('image')) {
+
+               if ($post->image) {
+                   Storage::disk('public')->delete($post->image);
+               }
+
+               $validated['image'] = $request->file('image')->store('images', 'public');
+           }
 
             $post->update($validated);
             return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
@@ -128,8 +152,14 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+
         try {
+
             Gate::authorize('delete', $post);
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+
             $post->delete();
             return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
         } catch (AuthorizationException $e) {
