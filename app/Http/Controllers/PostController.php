@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PostMail;
 use App\Models\Post;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -63,8 +65,10 @@ class PostController extends Controller
                 throw new \Exception('Image file is required.');
             }
             $post = auth()->user()->posts()->create($validated);
+                Mail::to("tyimisip457@modotso.com")->send(new PostMail());
 
             if ($post) {
+
                 Log::info('Post created successfully.');
                 return redirect()->route('posts.index')->with('success', 'Post created successfully.');
             } else {
