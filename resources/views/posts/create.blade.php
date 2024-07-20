@@ -1,7 +1,10 @@
+
 <x-layout>
-<x-header>
-    Create a Post
-</x-header>
+    <x-header>
+        Create a Post
+    </x-header>
+    {{--Error Sections--}}
+    <x-error></x-error>
 
     <div class="mx-w-2xl mx-auto p-4 bg-slate-200 dark:bg-slate-800 rounded-lg">
         <form method="post" action="{{route('posts.store')}}">
