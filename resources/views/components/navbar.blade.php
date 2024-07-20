@@ -22,6 +22,10 @@
                 @auth
                     <span class="text-blue-600 dark:text-blue-400 font-semibold"> Welcome {{Auth::user()->name}}
                     </span>
+
+{{--                Search Bar--}}
+
+
                     <form method="post" action="{{route('logout')}}">
 @csrf
 

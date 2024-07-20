@@ -23,7 +23,7 @@ class PostController extends Controller
     public function index()
     {
         try {
-            $posts = Post::all();
+            $posts = Post::paginate(3);
             return view('posts.index', compact('posts'));
         } catch (\Exception $e) {
             Log::error('Error fetching posts: ' . $e->getMessage());
@@ -172,5 +172,10 @@ class PostController extends Controller
             Log::error('Error deleting post: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Unable to delete post. Please try again later.');
         }
+    }
+
+    public function search()
+    {
+
     }
 }

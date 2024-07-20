@@ -40,8 +40,14 @@
                     </div>
                 </div>
             @endforeach
+
+
+
         @else
             <p>No posts found.</p>
         @endif
     </div>
+            <div class="mb-6 justify-center align-bottom ">
+                {{$posts->links()}}
+            </div>
 </x-layout>
