@@ -11,6 +11,8 @@ Route::resource('/posts', PostController::class)->middleware('auth');
 Route::get('/search', [PostController::class, 'search'])->name('posts.search')->middleware('auth');
 
 
+Route::post('/posts/{post}/comments', [PostController::class, 'storeComment'])->name('posts.comment')->middleware('auth');
+Route::post('/posts/{post}/comments', [PostController::class, 'storeComment'])->name('posts.comment')->middleware('auth');
 
 
 //Register

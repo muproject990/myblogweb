@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Mail\PostMail;
+use App\Models\Comment;
 use App\Models\Post;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -93,7 +95,7 @@ class PostController extends Controller
     {
         try {
             $post = Post::findOrFail($id);
-            return view('posts.show', compact('post'));
+            return view('posts.show', ['post' => $post], );
         } catch (ModelNotFoundException $e) {
             return view('error', ['message' => 'Post not found.']);
         } catch (\Exception $e) {
@@ -184,4 +186,31 @@ class PostController extends Controller
 
         return view('posts.index', compact('posts', 'query'));
     }
+    public function storeComment(Request $request, $postId)
+    {
+        // Check if user is authenticated
+        if (!auth()->check()) {
+            return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+        }
+
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        // Log the user ID and post ID
+        Log::info('Adding comment', ['postId' => $postId, 'userId' => auth()->id()]);
+
+        $comment = new Comment([
+            'content' => $request->content,
+            'post_id' => $postId,
+            'user_id' => auth()->id(),
+        ]);
+
+        $comment->save();
+
+        return response()->json(['success' => true]);
+    }
+
+
+
 }
