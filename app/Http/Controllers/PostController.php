@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Mail\PostMail;
+use App\Models\Comment;
 use App\Models\Post;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -54,7 +56,7 @@ class PostController extends Controller
             $validated = $request->validate([
                 'title' => 'required|min:5|max:255',
                 'content' => 'required',
-                'image'=>['required','image']
+                'image' => ['required', 'image']
             ]);
 
             // Handle file upload
@@ -65,7 +67,7 @@ class PostController extends Controller
                 throw new \Exception('Image file is required.');
             }
             $post = auth()->user()->posts()->create($validated);
-                Mail::to("tyimisip457@modotso.com")->send(new PostMail());
+            Mail::to("test@gmailTo@gmail.com")->send(new PostMail());
 
             if ($post) {
 
@@ -93,7 +95,7 @@ class PostController extends Controller
     {
         try {
             $post = Post::findOrFail($id);
-            return view('posts.show', compact('post'));
+            return view('posts.show', ['post' => $post], );
         } catch (ModelNotFoundException $e) {
             return view('error', ['message' => 'Post not found.']);
         } catch (\Exception $e) {
@@ -126,18 +128,18 @@ class PostController extends Controller
             $validated = $request->validate([
                 'title' => 'required|min:5|max:255',
                 'content' => 'required',
-                'image'=>['sometimes','image']
+                'image' => ['sometimes', 'image']
 
             ]);
 
-           if ($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
 
-               if ($post->image) {
-                   Storage::disk('public')->delete($post->image);
-               }
+                if ($post->image) {
+                    Storage::disk('public')->delete($post->image);
+                }
 
-               $validated['image'] = $request->file('image')->store('images', 'public');
-           }
+                $validated['image'] = $request->file('image')->store('images', 'public');
+            }
 
             $post->update($validated);
             return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
@@ -174,8 +176,41 @@ class PostController extends Controller
         }
     }
 
-    public function search()
+    public function search(Request $request)
     {
+        $query = $request->input('search');
 
+        $posts = Post::where('title', 'like', "%{$query}%")
+            ->orWhere('content', 'like', "%{$query}%")
+            ->paginate(10);
+
+        return view('posts.index', compact('posts', 'query'));
     }
+    public function storeComment(Request $request, $postId)
+    {
+        // Check if user is authenticated
+        if (!auth()->check()) {
+            return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+        }
+
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        // Log the user ID and post ID
+        Log::info('Adding comment', ['postId' => $postId, 'userId' => auth()->id()]);
+
+        $comment = new Comment([
+            'content' => $request->content,
+            'post_id' => $postId,
+            'user_id' => auth()->id(),
+        ]);
+
+        $comment->save();
+
+        return response()->json(['success' => true]);
+    }
+
+
+
 }

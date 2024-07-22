@@ -40,7 +40,7 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-protected function casts(): array
+    protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
@@ -50,6 +50,12 @@ protected function casts(): array
 
     public function posts(): HasMany
     {
-       return $this->hasMany(Post::class);
+        return $this->hasMany(Post::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }
