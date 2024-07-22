@@ -69,9 +69,12 @@
                     <form id="commentForm">
                         @csrf
                         <input type="hidden" id="postId" name="postId">
-                        <textarea id="commentContent" name="content" rows="4"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            required></textarea>
+                        <div class="mt-4">
+
+                            <textarea id="commentContent" name="content" rows="4"
+                                class="mt-1 block w-full px-3 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+                                placeholder="Write your comment here..." required></textarea>
+                        </div>
                         <button type="submit"
                             class="mt-3 px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
                             Submit Comment
