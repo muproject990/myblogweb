@@ -67,7 +67,7 @@ class PostController extends Controller
                 throw new \Exception('Image file is required.');
             }
             $post = auth()->user()->posts()->create($validated);
-            Mail::to("tyimisip457@modotso.com")->send(new PostMail());
+            Mail::to("test@gmailTo@gmail.com")->send(new PostMail());
 
             if ($post) {
 
